@@ -5,8 +5,8 @@ else
   local tools = {
     { icon = "rectangular_marquee", name = "Rectangular Marquee Tool", tool = "rectangular_marquee", key = "M" },
     { icon = "elliptical_marquee", name = "Elliptical Marquee Tool", tool = "elliptical_marquee", key = "Shift+M" },
-    { icon = "lasso", name = "Lasso Tool", tool = "lasso", key = "L" },
-    { icon = "polygonal_lasso", name = "Polygonal Lasso Tool", tool = "polygonal_lasso", key = "L" },
+    { icon = "lasso", name = "Lasso Tool", tool = "lasso", key = "Q" },
+    { icon = "polygonal_lasso", name = "Polygonal Lasso Tool", tool = "polygonal_lasso", key = "Shift+Q" },
     { icon = "magic_wand", name = "Magic Wand Tool", tool = "magic_wand", key = "W" },
     { icon = "pencil", name = "Pencil Tool", tool = "pencil", key = "B" },
     { icon = "spray", name = "Spray Tool", tool = "spray", key = "Shift+B" },
@@ -21,7 +21,7 @@ else
     { icon = "line", name = "Line Tool", tool = "line", key = "L" },
     { icon = "curve", name = "Curve Tool", tool = "curve", key = "Shift+L" },
     { icon = "rectangle", name = "Rectangle Tool", tool = "rectangle", key = "U" },
-    { icon = "filled_rectangle", name = "Filled Rectangle Tool", tool = "filled_rectangle", key = "Shift+U" },
+    { icon = "filled_rectangle", name = "Filled Rectangle Tool", tool = "filled_rectangle", key = "U" },
     { icon = "ellipse", name = "Ellipse Tool", tool = "ellipse", key = "Shift+U" },
     { icon = "filled_ellipse", name = "Filled Ellipse Tool", tool = "filled_ellipse", key = "Shift+U" },
     { icon = "contour", name = "Contour Tool", tool = "contour", key = "D" },
@@ -37,13 +37,18 @@ else
   local fixed_win_w = 480
   local fixed_win_h = 48
 
-  local dlg = Dialog{ title = "Tools", resizable = false }
+  local dlg = Dialog{
+    title = "Tools",
+    resizable = false
+  }
+
   global_full_quick_tools_dialog = dlg
 
   dlg:canvas{
     id = "tool_canvas",
     width = 468,
     height = 22,
+
     onpaint = function(ev)
       local gc = ev.context
       local bounds = dlg.bounds
@@ -61,6 +66,7 @@ else
         else
           gc.color = Color{ r = 50, g = 50, b = 58 }
         end
+
         gc:fillRect(Rectangle(x, y, btn_w - 1, btn_h - 1))
 
         gc.color = Color{ r = 30, g = 30, b = 35 }
@@ -75,18 +81,28 @@ else
 
       if col >= 0 and col < #tools and ev.y >= 0 and ev.y <= btn_h + 2 then
         local idx = col + 1
+
         if hover_idx ~= idx then
           hover_idx = idx
           local t = tools[hover_idx]
-          dlg:modify{ title = t.name .. " [" .. t.key .. "]" }
+
+          dlg:modify{
+            title = t.name .. " [" .. t.key .. "]"
+          }
+
           dlg:repaint()
         end
+
         return
       end
 
       if hover_idx ~= nil then
         hover_idx = nil
-        dlg:modify{ title = "Tools" }
+
+        dlg:modify{
+          title = "Tools"
+        }
+
         dlg:repaint()
       end
     end,
@@ -101,5 +117,10 @@ else
   dlg:show{ wait = false }
 
   local bounds = dlg.bounds
-  dlg.bounds = Rectangle(bounds.x, bounds.y, fixed_win_w, fixed_win_h)
+  dlg.bounds = Rectangle(
+    bounds.x,
+    bounds.y,
+    fixed_win_w,
+    fixed_win_h
+  )
 end

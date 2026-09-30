@@ -2,11 +2,12 @@ if global_full_quick_tools_dialog then
   global_full_quick_tools_dialog:close()
   global_full_quick_tools_dialog = nil
   else
+
     local tools = {
       { icon = "rectangular_marquee", name = "Rectangular Marquee Tool", tool = "rectangular_marquee", key = "M" },
       { icon = "elliptical_marquee", name = "Elliptical Marquee Tool", tool = "elliptical_marquee", key = "Shift+M" },
-      { icon = "lasso", name = "Lasso Tool", tool = "lasso", key = "L" },
-      { icon = "polygonal_lasso", name = "Polygonal Lasso Tool", tool = "polygonal_lasso", key = "L" },
+      { icon = "lasso", name = "Lasso Tool", tool = "lasso", key = "Q" },
+      { icon = "polygonal_lasso", name = "Polygonal Lasso Tool", tool = "polygonal_lasso", key = "Shift+Q" },
       { icon = "magic_wand", name = "Magic Wand Tool", tool = "magic_wand", key = "W" },
       { icon = "pencil", name = "Pencil Tool", tool = "pencil", key = "B" },
       { icon = "spray", name = "Spray Tool", tool = "spray", key = "Shift+B" },
@@ -20,8 +21,8 @@ if global_full_quick_tools_dialog then
       { icon = "gradient", name = "Gradient Tool", tool = "gradient", key = "Shift+G" },
       { icon = "line", name = "Line Tool", tool = "line", key = "L" },
       { icon = "curve", name = "Curve Tool", tool = "curve", key = "Shift+L" },
-      { icon = "rectangle", name = "Rectangle Tool", tool = "rectangle", key = "U" },
-      { icon = "filled_rectangle", name = "Filled Rectangle Tool", tool = "filled_rectangle", key = "Shift+U" },
+      { icon = "rectangle", name = "Rectangle Tool", tool = "rectangle", key = "Shift+U" },
+      { icon = "filled_rectangle", name = "Filled Rectangle Tool", tool = "filled_rectangle", key = "U" },
       { icon = "ellipse", name = "Ellipse Tool", tool = "ellipse", key = "Shift+U" },
       { icon = "filled_ellipse", name = "Filled Ellipse Tool", tool = "filled_ellipse", key = "Shift+U" },
       { icon = "contour", name = "Contour Tool", tool = "contour", key = "D" },
@@ -32,9 +33,11 @@ if global_full_quick_tools_dialog then
     }
 
     local row_counts = { 5, 4, 4, 2, 2, 4, 2, 2, 1 }
-    local btn_w, btn_h = 18, 18
+
+    local btn_w = 18
+    local btn_h = 18
+
     local hover_idx = nil
-    local mouse_pos = { x = 0, y = 0 }
 
     local fixed_win_w = 101
     local fixed_win_h = 185
@@ -49,119 +52,145 @@ if global_full_quick_tools_dialog then
             x = (col_idx - 1) * btn_w,
             y = (row_idx - 1) * btn_h
           }
+
           current_tool = current_tool + 1
           end
           end
           end
 
-          local dlg = Dialog{ title = "Tools", resizable = false }
+          local dlg = Dialog{
+            title = "Tools",
+            resizable = false
+          }
+
           global_full_quick_tools_dialog = dlg
 
           dlg:canvas{
             id = "tool_canvas",
+
             width = 5 * btn_w,
             height = 9 * btn_h,
+
             onpaint = function(ev)
             local gc = ev.context
             local bounds = dlg.bounds
 
-            if bounds.width ~= fixed_win_w or bounds.height ~= fixed_win_h then
-              dlg.bounds = Rectangle(bounds.x, bounds.y, fixed_win_w, fixed_win_h)
+            if bounds.width ~= fixed_win_w
+              or bounds.height ~= fixed_win_h then
+
+              dlg.bounds = Rectangle(
+                bounds.x,
+                bounds.y,
+                fixed_win_w,
+                fixed_win_h
+              )
               end
 
               for i, t in ipairs(tools) do
                 local pos = tool_positions[i]
+
                 if pos then
-                  local x, y = pos.x, pos.y
+                  local x = pos.x
+                  local y = pos.y
 
+                  -- Hover görünümü
                   if hover_idx == i then
-                    gc.color = Color{ r = 90, g = 90, b = 120 }
+                    gc.color = Color{
+                      r = 90,
+                      g = 90,
+                      b = 120
+                    }
                     else
-                      gc.color = Color{ r = 50, g = 50, b = 58 }
-                      end
-                      gc:fillRect(Rectangle(x, y, btn_w - 1, btn_h - 1))
-
-                      gc.color = Color{ r = 30, g = 30, b = 35 }
-                      gc:strokeRect(Rectangle(x, y, btn_w - 1, btn_h - 1))
-
-                      gc:drawThemeImage("tool_" .. t.icon, x + 1, y + 1)
-                      end
+                      gc.color = Color{
+                        r = 50,
+                        g = 50,
+                        b = 58
+                      }
                       end
 
-                      if hover_idx and tools[hover_idx] then
-                        local t = tools[hover_idx]
-                        local text = t.key
+                      gc:fillRect(
+                        Rectangle(
+                          x,
+                          y,
+                          btn_w - 1,
+                          btn_h - 1
+                        )
+                      )
 
-                        local textSize = gc:measureText(text)
-                        local tt_w = textSize.width + 8
-                        local tt_h = textSize.height + 6
+                      -- Buton kenarlığı
+                      gc.color = Color{
+                        r = 30,
+                        g = 30,
+                        b = 35
+                      }
 
-                        local max_w = 5 * btn_w
-                        local max_h = 9 * btn_h
+                      gc:strokeRect(
+                        Rectangle(
+                          x,
+                          y,
+                          btn_w - 1,
+                          btn_h - 1
+                        )
+                      )
 
-                        local tt_x = mouse_pos.x + 10
-                        local tt_y = mouse_pos.y + 12
+                      -- Aseprite tema ikonu
+                      gc:drawThemeImage(
+                        "tool_" .. t.icon,
+                        x + 1,
+                        y + 1
+                      )
+                      end
+                      end
 
-                        if tt_x + tt_w > max_w then
-                          tt_x = mouse_pos.x - tt_w - 4
-                          end
+                      -- TOOLTIP YOK
+                      --
+                      -- Burada özellikle hiçbir tooltip çizilmiyor.
+                      -- fillText() yok.
+                      -- measureText() yok.
+                      -- tooltip kutusu yok.
+                      end,
 
-                          if tt_x < 0 then
-                            tt_x = 0
+                      onmousemove = function(ev)
+                      local found_idx = nil
+
+                      for i = 1, #tools do
+                        local pos = tool_positions[i]
+
+                        if pos then
+                          if ev.x >= pos.x
+                            and ev.x < pos.x + btn_w
+                            and ev.y >= pos.y
+                            and ev.y < pos.y + btn_h then
+
+                            found_idx = i
+                            break
+                            end
+                            end
                             end
 
-                            if tt_y + tt_h > max_h then
-                              tt_y = mouse_pos.y - tt_h - 4
+                            if hover_idx ~= found_idx then
+                              hover_idx = found_idx
+                              dlg:repaint()
                               end
+                              end,
 
-                              if tt_y < 0 then
-                                tt_y = 0
+                              onmouseup = function(ev)
+                              if hover_idx and tools[hover_idx] then
+                                app.tool = tools[hover_idx].tool
                                 end
-
-                                gc.color = Color{ r = 35, g = 55, b = 85 }
-                                gc:fillRect(Rectangle(tt_x, tt_y, tt_w, tt_h))
-
-                                gc.color = Color{ r = 90, g = 140, b = 210 }
-                                gc:strokeRect(Rectangle(tt_x, tt_y, tt_w, tt_h))
-
-                                gc.color = Color{ r = 255, g = 235, b = 150 }
-                                gc:fillText(text, tt_x + 4, tt_y + 3)
                                 end
-                                end,
-
-                                onmousemove = function(ev)
-                                mouse_pos.x = ev.x
-                                mouse_pos.y = ev.y
-
-                                local found_idx = nil
-
-                                for i = 1, #tools do
-                                  local pos = tool_positions[i]
-                                  if pos then
-                                    if ev.x >= pos.x and ev.x < pos.x + btn_w and
-                                      ev.y >= pos.y and ev.y < pos.y + btn_h then
-                                      found_idx = i
-                                      break
-                                      end
-                                      end
-                                      end
-
-                                      if hover_idx ~= found_idx then
-                                        hover_idx = found_idx
-                                        end
-
-                                        dlg:repaint()
-                                        end,
-
-                                        onmouseup = function(ev)
-                                        if hover_idx and tools[hover_idx] then
-                                          app.tool = tools[hover_idx].tool
-                                          end
-                                          end
           }
 
-          dlg:show{ wait = false }
+          dlg:show{
+            wait = false
+          }
 
           local bounds = dlg.bounds
-          dlg.bounds = Rectangle(bounds.x, bounds.y, fixed_win_w, fixed_win_h)
+
+          dlg.bounds = Rectangle(
+            bounds.x,
+            bounds.y,
+            fixed_win_w,
+            fixed_win_h
+          )
           end
