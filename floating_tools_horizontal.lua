@@ -35,7 +35,7 @@ else
   local hover_idx = nil
 
   local fixed_win_w = 480
-  local fixed_win_h = 48
+  local fixed_win_h = 45
 
   local dlg = Dialog{
     title = "Tools",
