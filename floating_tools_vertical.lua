@@ -107,7 +107,6 @@ else
         local tt_w = textSize.width + 10
         local tt_h = textSize.height + 4
 
-        -- Buton konumunun 12 piksel daha solundan başlatıyoruz
         local tt_x = pos.x - 12
         local tt_y = pos.y - tt_h - 2
 
