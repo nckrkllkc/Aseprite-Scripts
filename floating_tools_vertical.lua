@@ -77,7 +77,6 @@ else
         dlg.bounds = Rectangle(bounds.x, bounds.y, fixed_win_w, fixed_win_h)
       end
 
-      -- 1. Araç Butonlarını Çiz
       for i, t in ipairs(tools) do
         local pos = tool_positions[i]
         if pos then
@@ -99,7 +98,6 @@ else
         end
       end
 
-      -- 2. Tooltip Katmanı (Sola kaydırılmış yerleşim)
       if hover_idx and tools[hover_idx] then
         local t = tools[hover_idx]
         local text = t.key
@@ -113,30 +111,24 @@ else
         local tt_x = pos.x - 12
         local tt_y = pos.y - tt_h - 2
 
-        -- En üst satırdaysa altına koy
         if tt_y < 2 then
           tt_y = pos.y + btn_h + 2
         end
 
-        -- Sağ kenardan taşarsa pencerenin en sağına sıfırla
         if tt_x + tt_w > fixed_win_w - 2 then
           tt_x = fixed_win_w - tt_w - 2
         end
 
-        -- Sol kenardan taşmayı önle
         if tt_x < 2 then
           tt_x = 2
         end
 
-        -- Arka Plan
         gc.color = Color{ r = 20, g = 20, b = 25 }
         gc:fillRect(Rectangle(tt_x, tt_y, tt_w, tt_h))
 
-        -- Çerçeve
         gc.color = Color{ r = 100, g = 140, b = 200 }
         gc:strokeRect(Rectangle(tt_x, tt_y, tt_w, tt_h))
 
-        -- Metin
         gc.color = Color{ r = 255, g = 255, b = 255 }
         gc:fillText(text, tt_x + 5, tt_y + 2)
       end
